@@ -1,12 +1,9 @@
 package com.izhonghong.plugin.idea.warhelper.core;
 
-import com.intellij.FileSetTestCase;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
 import com.izhonghong.plugin.idea.warhelper.ui.WarHelperDialog;
-import org.apache.commons.io.FileUtils;
 
-import javax.swing.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -21,7 +18,7 @@ import java.util.Optional;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-public class DefaultWarHelper implements WarHelper{
+public class DefaultWarHelper {
 
     private WarHelperDialog dialog;
     private Project project;

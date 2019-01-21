@@ -1,23 +1,14 @@
 package com.izhonghong.plugin.idea.warhelper.ui;
 
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.progress.EmptyProgressIndicator;
-import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.text.StringUtil;
 import com.izhonghong.plugin.idea.warhelper.core.DefaultWarHelper;
-import com.izhonghong.plugin.idea.warhelper.core.WarHelper;
-import org.eclipse.jdt.internal.compiler.ProcessTaskManager;
-import org.jdesktop.swingx.JXDatePicker;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
 import java.awt.event.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
@@ -56,9 +47,6 @@ public class WarHelperDialog extends JDialog {
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
 
-       /* JXDatePicker datePicker = new JXDatePicker();
-        panel1.add(datePicker);*/
-
         buttonOK.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 onOK();
@@ -87,7 +75,6 @@ public class WarHelperDialog extends JDialog {
             }
         });
 
-        // call onCancel() when cross is clicked
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
@@ -95,7 +82,6 @@ public class WarHelperDialog extends JDialog {
             }
         });
 
-        // call onCancel() on ESCAPE
         contentPane.registerKeyboardAction(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 onCancel();
@@ -104,11 +90,6 @@ public class WarHelperDialog extends JDialog {
     }
 
     private void onOK() {
-       /* WarHelperTaskBar warHelperTaskBar = new WarHelperTaskBar(project, "packaging...")
-                .setWarName(cUsersAdministratorDesktopTextField.getText(), aaaWarTextField.getText())
-                .setWebDir(webRootTextField.getText());
-        ProgressManager.getInstance().runProcessWithProgressAsynchronously(warHelperTaskBar, new EmptyProgressIndicator());*/
-        String warName = cUsersAdministratorDesktopTextField.getText() + aaaWarTextField.getText();
         final WarHelperDialog dialog = this;
         new Thread(new Runnable() {
             @Override
@@ -169,17 +150,16 @@ public class WarHelperDialog extends JDialog {
     }
 
     public static void init(Project project) {
-        // JXDatePicker datePicker = new JXDatePicker();
-        //未覆盖前的进度条颜色
         UIManager.put("ProgressBar.selectionBackground", new Color(0, 179, 191));
-        //覆盖后的进度条颜色
         UIManager.put("ProgressBar.selectionForeground", new Color(0, 179, 191));
+
         WarHelperDialog dialog = new WarHelperDialog();
         dialog.setTitle("warhelper");
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int x = screenSize.width / 2 - 250;
         int y = screenSize.height / 2 - 150;
         dialog.setLocation(x, y);
+
         if (project != null) {
             dialog.setWarName(project.getName() + ".war");
         }
