@@ -35,11 +35,6 @@ public class DefaultWarHelper implements WarHelper{
 
     public void doWar() {
         dialog.showProgress();
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         String webDir = dialog.getWebRootTextField().getText();
         File projectRoot = new File(project.getProjectFilePath()).getParentFile().getParentFile();
         boolean hasWebDir = false;
@@ -49,7 +44,7 @@ public class DefaultWarHelper implements WarHelper{
             }
         }
         if (!hasWebDir) {
-            afterWar(false, "webdir not found:" + webDir);
+            afterWar(false, "webdir not found: " + webDir);
             return;
         }
         String path =  projectRoot.getAbsolutePath();
@@ -66,15 +61,10 @@ public class DefaultWarHelper implements WarHelper{
     }
 
     private void afterWar(boolean success, String msg) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                dialog.stopProgress(msg);
-                if (success) {
-                    dialog.dispose();
-                }
-            }
-        });
+        dialog.stopProgress(msg);
+        if (success) {
+            dialog.dispose();
+        }
     }
 
     private void doFullWar(String path, String webDir, String warName) {
@@ -90,7 +80,7 @@ public class DefaultWarHelper implements WarHelper{
                 afterWar(false, "unkhnow errro");
             }
         } catch (Exception e) {
-            afterWar(false, "package error:  " + Optional.ofNullable(e.getMessage()).orElse(e.getClass().getName()));
+            afterWar(false, "package error: " + Optional.ofNullable(e.getMessage()).orElse(e.getClass().getName()));
         }
     }
 
@@ -131,7 +121,7 @@ public class DefaultWarHelper implements WarHelper{
                 }
             }
         } catch (IOException e) {
-            afterWar(false, "package error:  " + Optional.ofNullable(e.getMessage()).orElse(e.getClass().getName()));
+            afterWar(false, "package error: " + Optional.ofNullable(e.getMessage()).orElse(e.getClass().getName()));
             return;
         }
         afterWar(true, "success");

@@ -119,7 +119,7 @@ public class WarHelperDialog extends JDialog {
                     if (!progressBar1.isVisible()) {
                         progressBar1.setVisible(true);
                     }
-                    dialog.stopProgress("package error:  " + Optional.ofNullable(e.getMessage()).orElse(e.getClass().getName()));
+                    dialog.stopProgress("package error: " + Optional.ofNullable(e.getMessage()).orElse(e.getClass().getName()));
                 }
             }
         }).start();
@@ -127,20 +127,6 @@ public class WarHelperDialog extends JDialog {
 
     private void onCancel() {
         dispose();
-    }
-
-    public static void main(String[] args) {
-        JXDatePicker datePicker = new JXDatePicker();
-        WarHelperDialog dialog = new WarHelperDialog();
-        dialog.setTitle("warhelper");
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        int x = screenSize.width / 2 - 250;
-        int y = screenSize.height / 2 - 150;
-        dialog.setPackagePath(FileSystemView.getFileSystemView() .getHomeDirectory().getAbsolutePath() + "\\");
-        dialog.setLocation(x, y);
-        dialog.pack();
-        dialog.setVisible(true);
-        System.exit(0);
     }
 
     private void createUIComponents() {
@@ -183,6 +169,11 @@ public class WarHelperDialog extends JDialog {
     }
 
     public static void init(Project project) {
+        // JXDatePicker datePicker = new JXDatePicker();
+        //未覆盖前的进度条颜色
+        UIManager.put("ProgressBar.selectionBackground", new Color(0, 179, 191));
+        //覆盖后的进度条颜色
+        UIManager.put("ProgressBar.selectionForeground", new Color(0, 179, 191));
         WarHelperDialog dialog = new WarHelperDialog();
         dialog.setTitle("warhelper");
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -196,5 +187,10 @@ public class WarHelperDialog extends JDialog {
         dialog.setProject(project);
         dialog.pack();
         dialog.setVisible(true);
+    }
+
+    public static void main(String[] args) {
+        init(null);
+        System.exit(0);
     }
 }
