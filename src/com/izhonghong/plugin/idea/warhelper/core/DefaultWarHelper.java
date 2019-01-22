@@ -33,6 +33,12 @@ public class DefaultWarHelper {
     public void doWar() {
         dialog.showProgress();
         String webDir = dialog.getWebRootTextField().getText();
+        String destination = dialog.getcUsersAdministratorDesktopTextField().getText();
+        String name = dialog.getAaaWarTextField().getText();
+        if (!isValid(webDir, destination, name)) {
+            return;
+        }
+
         File projectRoot = new File(project.getProjectFilePath()).getParentFile().getParentFile();
         boolean hasWebDir = false;
         for (File f : projectRoot.listFiles()) {
@@ -45,9 +51,12 @@ public class DefaultWarHelper {
             return;
         }
         String path =  projectRoot.getAbsolutePath();
-        String warName = dialog.getcUsersAdministratorDesktopTextField().getText() + dialog.getAaaWarTextField().getText();
-        String iteratDate = dialog.getTextField1().getText();
 
+        if (!destination.endsWith("/") && !destination.endsWith("\\")) {
+            destination += File.separator;
+        }
+        String warName = destination + name;
+        String iteratDate = dialog.getTextField1().getText();
         boolean isIterat = StringUtil.isNotEmpty(iteratDate);
         if (isIterat) {
             doIteratWar(path, webDir, warName, iteratDate);
@@ -86,9 +95,9 @@ public class DefaultWarHelper {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(datePattern);
         LocalDateTime date = null;
         try {
-            date = LocalDateTime.parse(iteratDate, dateTimeFormatter);
+            date = LocalDateTime.parse(iteratDate.trim(), dateTimeFormatter);
         } catch (Exception e) {
-            afterWar(false, "iterat must be a date like " + datePattern);
+            afterWar(false, "iterat-from must be a date like " + datePattern);
             return;
         }
         long from = date.toInstant(ZoneOffset.of("+8")).toEpochMilli();
@@ -97,7 +106,7 @@ public class DefaultWarHelper {
         final String webPath = path + File.separator + webDir;
         addToWarFiles(toWarFiles, new File(webPath), from);
         if (toWarFiles.isEmpty()) {
-            afterWar(false, "no file changed after " + date.format(dateTimeFormatter));
+            afterWar(false, "no files changed after " + date.format(dateTimeFormatter));
             return;
         }
 
@@ -136,6 +145,45 @@ public class DefaultWarHelper {
         } else if(from <= file.lastModified()) {
             files.add(file);
         }
+    }
+
+    private boolean isValid(String webDir, String destination, String name) {
+        if (StringUtil.isEmpty(webDir)) {
+            afterWar(false, "webdir can not be empty");
+            return false;
+        }
+
+        if (StringUtil.isEmpty(destination)) {
+            afterWar(false, "destination can not be empty");
+            return false;
+        }
+        File dest = new File(destination);
+        if (!dest.exists()) {
+            afterWar(false, "destination not found");
+            return false;
+        } else if (!dest.isDirectory()) {
+            afterWar(false, "destination must be a directory");
+            return false;
+        }
+
+        if (StringUtil.isEmpty(name)) {
+            afterWar(false, "name can not be empty");
+            return false;
+        }
+
+        final String[] allowed_suffix ={".war", ".jar", ".zip"};
+        boolean allowedName = false;
+        for (String suffix : allowed_suffix) {
+            if (name.endsWith(suffix)) {
+                allowedName = true;
+                break;
+            }
+        }
+        if (!allowedName) {
+            afterWar(false, "name must ends width .war/.jar/.zip");
+            return false;
+        }
+        return true;
     }
 
 }
